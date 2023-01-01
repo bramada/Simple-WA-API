@@ -3,6 +3,6 @@
 - npm instal
 - node app
 
-- Entry point: /message
-- Parameter: phoneNumber, message
+- Entry point: /send
+- Parameter: phoneNumber, message, token
 - Method: GET & POST
