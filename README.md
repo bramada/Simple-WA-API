@@ -1,4 +1,4 @@
-# Super-Simple-WA-API
+# Simple-WA-API
 
 - instal node.js v 12 or higher
 - clone this repo
