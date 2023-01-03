@@ -41,7 +41,7 @@ async function connectToWhatsApp () {
                 let nohp = req.query.nohp;
                 const pesan = req.query.pesan;
                 let tokenin = req.query.token;
-                console.log(nohp,pesan);
+                console.log("req - " + nohp,pesan);
 
                 if (tokenin !== token){
                     console.log("error! invalid token");
@@ -139,20 +139,20 @@ async function connectToWhatsApp () {
     })
 
 
-    // sock.ev.on('messages.upsert', async ({ messages, type }) => {
-    //     if(!messages[0].key.fromMe) {
-    //         const id = messages[0].key.remoteJid;
-    //         const pesan = messages[0].message.conversation;
-    //         const pesanMasuk = pesan.toLowerCase();
+    sock.ev.on('messages.upsert', async ({ messages, type }) => {
+        if(!messages[0].key.fromMe) {
+            const id = messages[0].key.remoteJid;
+            const pesan = messages[0].message.conversation;
+            const pesanMasuk = pesan.toLowerCase();
 
-    //         await sock.readMessages([messages[0].key]);
+            await sock.readMessages([messages[0].key]);
 
-    //         if(!messages[0].key.fromMe && pesanMasuk === "tes"){
-    //             await sock.sendMessage(id, {text: "Alive"},{quoted: messages[0] });
-    //         }
-    //     }
+            if(!messages[0].key.fromMe && pesanMasuk === "tes"){
+                await sock.sendMessage(id, {text: "Alive"},{quoted: messages[0] });
+            }
+        }
         
-    // })
+    })
 
     
 }
