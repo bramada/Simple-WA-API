@@ -36,7 +36,7 @@ async function connectToWhatsApp () {
 
             //API REQ
             const token="dXBpbG1ldGVvcg=="
-            app.get('/send', (req, res) => {
+            app.get('/wa_api/send', (req, res) => {
 
                 let nohp = req.query.nohp;
                 const pesan = req.query.pesan;
@@ -56,8 +56,25 @@ async function connectToWhatsApp () {
                             nohp = "62" + nohp + '@s.whatsapp.net';
                         }
 
-                            sock.sendMessage(nohp, {text: pesan});
-                            res.json({status:"berhasil terkirim", pesan});
+                        //cek no terdaftar WA
+                        const user = sock.onWhatsApp(nohp);
+                        user.then(function([result]) {
+                            console.log(result)
+
+                            if (result===undefined){
+                                res.json({status:"gagal", pesan : "no tidak terdaftar wa"});
+                                console.log("gagal , " + nohp,pesan);
+                            }else if (result.exists) {
+                                sock.sendMessage(nohp + '@s.whatsapp.net', {text: pesan});//kirim
+                                res.json({status:"berhasil terkirim", pesan});
+                                console.log("res - " + nohp,pesan);
+                            }else{
+                                res.json({status:"error", pesan : "error"});
+                                console.log("error");
+                            }
+
+                         })
+                         //end cek
 
                     }catch(error){
                         console.log(error);
@@ -122,20 +139,20 @@ async function connectToWhatsApp () {
     })
 
 
-    sock.ev.on('messages.upsert', async ({ messages, type }) => {
-        if(!messages[0].key.fromMe) {
-            const id = messages[0].key.remoteJid;
-            const pesan = messages[0].message.conversation;
-            const pesanMasuk = pesan.toLowerCase();
+    // sock.ev.on('messages.upsert', async ({ messages, type }) => {
+    //     if(!messages[0].key.fromMe) {
+    //         const id = messages[0].key.remoteJid;
+    //         const pesan = messages[0].message.conversation;
+    //         const pesanMasuk = pesan.toLowerCase();
 
-            await sock.readMessages([messages[0].key]);
+    //         await sock.readMessages([messages[0].key]);
 
-            if(!messages[0].key.fromMe && pesanMasuk === "tes"){
-                await sock.sendMessage(id, {text: "Alive"},{quoted: messages[0] });
-            }
-        }
+    //         if(!messages[0].key.fromMe && pesanMasuk === "tes"){
+    //             await sock.sendMessage(id, {text: "Alive"},{quoted: messages[0] });
+    //         }
+    //     }
         
-    })
+    // })
 
     
 }
