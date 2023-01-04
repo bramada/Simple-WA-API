@@ -56,6 +56,8 @@ async function connectToWhatsApp () {
                             nohp = "62" + nohp + '@s.whatsapp.net';
                         }
 
+                        nohp = nohp.replace(/\D/g, '');
+
                         //cek no terdaftar WA
                         const user = sock.onWhatsApp(nohp);
                         user.then(function([result]) {
@@ -104,6 +106,8 @@ async function connectToWhatsApp () {
                         }else{
                             nohp = "62" + nohp;
                         }
+
+                        nohp = nohp.replace(/\D/g, '');
 
                         //cek no terdaftar WA
                         const user = sock.onWhatsApp(nohp);
