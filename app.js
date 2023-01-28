@@ -32,116 +32,114 @@ async function connectToWhatsApp () {
             }
         } else if(connection === 'open') {
             console.log('opened connection')
-
-
-            //API REQ
-            const token="dXBpbG1ldGVvcg=="
-            app.get('/wa_api/send', (req, res) => {
-
-                let nohp = req.query.nohp;
-                const pesan = req.query.pesan;
-                let tokenin = req.query.token;
-                console.log("req - " + nohp,pesan);
-
-                if (tokenin !== token){
-                    console.log("error! invalid token");
-                    return res.status(401).json({status:"error",pesan:"invalid token"});
-                }else{
-                    try{
-                        if(nohp.startsWith("0")){
-                            nohp = "62" + nohp.slice("1") + '@s.whatsapp.net';
-                        }else if(nohp.startsWith("62")){
-                            nohp = nohp + '@s.whatsapp.net';
-                        }else{
-                            nohp = "62" + nohp + '@s.whatsapp.net';
-                        }
-
-                        nohp = nohp.replace(/\D/g, '');
-
-                        //cek no terdaftar WA
-                        const user = sock.onWhatsApp(nohp);
-                        user.then(function([result]) {
-                            console.log(result)
-
-                            if (result===undefined){
-                                res.json({status:"gagal", pesan : "no tidak terdaftar wa"});
-                                console.log("gagal , " + nohp,pesan);
-                            }else if (result.exists) {
-                                sock.sendMessage(nohp + '@s.whatsapp.net', {text: pesan});//kirim
-                                res.json({status:"berhasil terkirim", pesan});
-                                console.log("res - " + nohp,pesan);
-                            }else{
-                                res.json({status:"error", pesan : "error"});
-                                console.log("error");
-                            }
-
-                         })
-                         //end cek
-
-                    }catch(error){
-                        console.log(error);
-                        res.status(500).json({status:"error",pesan: "error server"});
-                        console.log(nohp,pesan);
-                    }
-                }
-
-            })
-
-            app.post('/send', (req, res) => {
-
-                let nohp = req.body.nohp;
-                const pesan = req.body.pesan;
-                let tokenin = req.body.token;
-                console.log("req - " + nohp,pesan);
-
-                if (tokenin !== token){
-                    console.log("error! invalid token");
-                    return res.status(401).json({status:"error",pesan:"invalid token"});
-                }else{
-                    try{
-                        if(nohp.startsWith("0")){
-                            nohp = "62" + nohp.slice("1");
-                        }else if(nohp.startsWith("62")){
-                            nohp = nohp;
-                        }else{
-                            nohp = "62" + nohp;
-                        }
-
-                        nohp = nohp.replace(/\D/g, '');
-
-                        //cek no terdaftar WA
-                        const user = sock.onWhatsApp(nohp);
-                        user.then(function([result]) {
-                            console.log(result)
-
-                            if (result===undefined){
-                                res.json({status:"gagal", pesan : "no tidak terdaftar wa"});
-                                console.log("gagal , " + nohp,pesan);
-                            }else if (result.exists) {
-                                sock.sendMessage(nohp + '@s.whatsapp.net', {text: pesan});//kirim
-                                res.json({status:"berhasil terkirim", pesan});
-                                console.log("res - " + nohp,pesan);
-                            }else{
-                                res.json({status:"error", pesan : "error"});
-                                console.log("error");
-                            }
-
-                         })
-                         //end cek
-
-                    }catch(error){
-                        console.log(error);
-                        res.status(500).json({status:"error",pesan: "error server"});
-                        console.log(nohp,pesan);
-                    }
-                }
-
-            })
-            //end API REQ
             
         }
     })
 
+    //API REQ
+    const token="dXBpbG1ldGVvcg=="
+    app.get('/send', async (req, res) => {
+
+        let nohp = req.query.nohp;
+        const pesan = req.query.pesan;
+        let tokenin = req.query.token;
+        console.log("req - " + nohp,pesan);
+
+        if (tokenin !== token){
+            console.log("error! invalid token");
+            return res.status(401).json({status:"error",pesan:"invalid token"});
+        }else{
+            try{
+                if(nohp.startsWith("0")){
+                    nohp = "62" + nohp.slice("1") + '@s.whatsapp.net';
+                }else if(nohp.startsWith("62")){
+                    nohp = nohp + '@s.whatsapp.net';
+                }else{
+                    nohp = "62" + nohp + '@s.whatsapp.net';
+                }
+
+                nohp = nohp.replace(/\D/g, '');
+
+                //cek no terdaftar WA
+                const user = sock.onWhatsApp(nohp);
+                user.then(function([result]) {
+                    console.log(result)
+
+                    if (result===undefined){
+                        res.json({status:"gagal", pesan : "no tidak terdaftar wa"});
+                        console.log("gagal , " + nohp,pesan);
+                    }else if (result.exists) {
+                        sock.sendMessage(nohp + '@s.whatsapp.net', {text: pesan});//kirim
+                        res.json({status:"berhasil terkirim", pesan});
+                        console.log("res - " + nohp,pesan);
+                    }else{
+                        res.json({status:"error", pesan : "error"});
+                        console.log("error");
+                    }
+
+                    })
+                    //end cek
+
+            }catch(error){
+                console.log(error);
+                res.status(500).json({status:"error",pesan: "error server"});
+                console.log(nohp,pesan);
+            }
+        }
+
+    })
+
+    app.post('/send', async (req, res) => {
+
+        let nohp = req.body.nohp;
+        const pesan = req.body.pesan;
+        let tokenin = req.body.token;
+        console.log("req - " + nohp,pesan);
+
+        if (tokenin !== token){
+            console.log("error! invalid token");
+            return res.status(401).json({status:"error",pesan:"invalid token"});
+        }else{
+            try{
+                if(nohp.startsWith("0")){
+                    nohp = "62" + nohp.slice("1");
+                }else if(nohp.startsWith("62")){
+                    nohp = nohp;
+                }else{
+                    nohp = "62" + nohp;
+                }
+
+                nohp = nohp.replace(/\D/g, '');
+
+                //cek no terdaftar WA
+                const user = sock.onWhatsApp(nohp);
+                user.then(function([result]) {
+                    console.log(result)
+
+                    if (result===undefined){
+                        res.json({status:"gagal", pesan : "no tidak terdaftar wa"});
+                        console.log("gagal , " + nohp,pesan);
+                    }else if (result.exists) {
+                        sock.sendMessage(nohp + '@s.whatsapp.net', {text: pesan});//kirim
+                        res.json({status:"berhasil terkirim", pesan});
+                        console.log("res - " + nohp,pesan);
+                    }else{
+                        res.json({status:"error", pesan : "error"});
+                        console.log("error");
+                    }
+
+                    })
+                    //end cek
+
+            }catch(error){
+                console.log(error);
+                res.status(500).json({status:"error",pesan: "error server"});
+                console.log(nohp,pesan);
+            }
+        }
+
+    })
+    //end API REQ
 
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
         if(!messages[0].key.fromMe) {
